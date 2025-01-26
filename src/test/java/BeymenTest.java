@@ -70,7 +70,11 @@ public class BeymenTest extends BaseTest {
 
         // Ürün adedini 2 yap ve doğrula
         cartPage.setProductQuantity(2);
-        Assertions.assertEquals(2, cartPage.getSelectedQuantity(), "Ürün adedi doğru değil!");
+        // Doğrula
+        int selectedQuantity = cartPage.getSelectedQuantity();
+        Assertions.assertEquals(2, selectedQuantity, "Ürün adedi doğru değil!");
+
+        System.out.println("Ürün adedi başarıyla güncellendi ve doğrulandı.");
 
         // Sepetteki ürünü sil
         cartPage.removeProductFromCart();

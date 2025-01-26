@@ -31,21 +31,20 @@ public class CartPage extends BasePage {
     // Ürün adedini seç
     public void setProductQuantity(int quantity) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-
-        // Dropdown öğesinin tıklanabilir olduğundan emin olun
         WebElement dropdownElement = wait.until(ExpectedConditions.elementToBeClickable(quantityDropdown));
 
         try {
-            // Select sınıfını kullanarak değer seç
+            // Select sınıfını kullanarak seçim yap
             Select select = new Select(dropdownElement);
             select.selectByValue(String.valueOf(quantity));
         } catch (Exception e) {
-            System.out.println("Normal yöntemle seçim başarısız, JavaScript ile deneniyor.");
-
-            // JavaScript kullanarak seçim yap
+            System.out.println("Dropdown normal yolla seçilemedi, JavaScript ile seçim deneniyor...");
             JavascriptExecutor js = (JavascriptExecutor) driver;
             js.executeScript("arguments[0].value='" + quantity + "'; arguments[0].dispatchEvent(new Event('change'));", dropdownElement);
         }
+
+        // Doğrulama için kısa bir bekleme
+        wait.until(ExpectedConditions.attributeToBe(dropdownElement, "value", String.valueOf(quantity)));
     }
 
     // Seçilen miktarı al
@@ -54,8 +53,12 @@ public class CartPage extends BasePage {
         Select select = new Select(dropdownElement);
         String selectedText = select.getFirstSelectedOption().getText();
 
-        // "1 adet" formatını ayıklamak için split kullan
-        return Integer.parseInt(selectedText.split(" ")[0]);
+        try {
+            return Integer.parseInt(selectedText.split(" ")[0]); // "1 adet" formatını ayıkla
+        } catch (NumberFormatException e) {
+            System.err.println("Seçilen değer sayı formatında değil: " + selectedText);
+            return -1; // Hata durumunda -1 döndür
+        }
     }
 
     // Sepet ürün fiyatını al
