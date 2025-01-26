@@ -1,4 +1,4 @@
-import org.apache.logging.log4j.core.util.Assert;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -64,6 +64,7 @@ public class BeymenTest extends BaseTest {
         productPage.selectSize();
         // Ürüne tıklama işlemi
         productPage.addProductToCart();
+
         cartPage.goToCart();
 
     // Gereksiz ondalık kısımları temizle
@@ -84,12 +85,13 @@ public class BeymenTest extends BaseTest {
 
         // Sepetteki ürünü sil
         cartPage.removeProductFromCart();
-        Thread.sleep(10);
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(cartPage.emptyCartMessage));
         // Sepetin boş olup olmadığını kontrol et
         boolean isCartEmpty = cartPage.isCartEmpty();
 
         // Sepet boş olmalı
         Assertions.assertTrue(isCartEmpty, "Sepet boş değil!");
-        // Sepet işlemleri (yorum satırına alındı)
+
 
     }}

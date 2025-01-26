@@ -3,6 +3,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 public class CartPage extends BasePage {
 
@@ -10,36 +13,33 @@ public class CartPage extends BasePage {
     private final By quantityDropdown = By.id("quantitySelect0-key-0");
     private final By cardProductPrice = By.cssSelector("span.priceBox__salePrice");
     private final By removeProductButton = By.xpath("//span[text()='Sil']");
-    private final By emptyCartMessage = By.cssSelector(".m-empty__messageTitle"); // Sepet boş olduğunda görünen mesajın CSS selector'ü
+    public final By emptyCartMessage = By.cssSelector(".m-empty__messageTitle"); // Sepet boş olduğunda görünen mesajın CSS selector'ü
+    public final By myCart = By.cssSelector("a.o-header__userInfo--item.bwi-cart-o");
 
     public CartPage(WebDriver driver) {
         super(driver);
     }
 
-    // Sepete gitmek için bağlantıya tıklama
     public void goToCart() {
-        WebElement cartLinkElement = driver.findElement(cartLink);
-        cartLinkElement.click();
-
-        // Sepet sayfasının yüklendiğini doğrulamak için bekleme
-        By cartPageIndicator = By.cssSelector("strong.m-basket__productInfoCategory"); // Belirleyici öğe
-        wait.until(ExpectedConditions.visibilityOfElementLocated(cartPageIndicator));
+        // myCart elementinin görünür olmasını bekle
+        waitForElementVisible(myCart, 20);
+        WebElement cartIcon = driver.findElement(myCart);
+        cartIcon.click();
     }
 
-    // Adet miktarını arttır
     public void setProductQuantity(int quantity) {
-        WebElement dropdownElement = driver.findElement(quantityDropdown);
+        WebElement dropdownElement = wait.until(ExpectedConditions.elementToBeClickable(quantityDropdown));
 
-        // Select sınıfını kullanarak değer seç
         Select select = new Select(dropdownElement);
-        select.selectByValue(String.valueOf(quantity)); // Miktarı seç (ör. "2")
+        select.selectByValue(String.valueOf(quantity));
     }
+
 
     // Seçilen miktarı al
     public int getSelectedQuantity() {
         WebElement dropdownElement = driver.findElement(quantityDropdown);
         Select select = new Select(dropdownElement);
-        return Integer.parseInt(select.getFirstSelectedOption().getText().split(" ")[0]); // İlk seçili seçeneği al ve int'e çevir
+        return Integer.parseInt(select.getFirstSelectedOption().getText().split(" ")[0]);
     }
 
     // Adet miktarını kontrol et
@@ -54,8 +54,11 @@ public class CartPage extends BasePage {
     }
 
     public void removeProductFromCart() {
-        wait.until(ExpectedConditions.elementToBeClickable(removeProductButton)).click(); // Element tıklanabilir olduğunda tıklayın
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(removeProductButton)); // Silme işlemi tamamlanana kadar bekleyin
+        WebElement removeButton = driver.findElement(removeProductButton);
+        removeButton.click();
+
+        // Ürün silindikten sonra, sepetin güncellenmesini bekle
+        wait.until(ExpectedConditions.invisibilityOf(removeButton));
     }
 
 

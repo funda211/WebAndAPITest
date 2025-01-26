@@ -51,10 +51,12 @@ public class BasePage {
         element.clear();
         element.sendKeys(text);
     }
-    // Elementin görünür olmasını bekler
-    protected void waitForElementToBeVisible(By locator) {
+
+    public void waitForElementVisible(By locator, int timeoutInSeconds) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeoutInSeconds));
         wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
+
 
 
     // Bir elementin tıklanabilir olmasını bekler
