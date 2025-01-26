@@ -19,7 +19,7 @@ public class ProductPage extends BasePage {
     // Bedeni seçmek
     public void selectSize() {
         // Tüm beden seçeneklerini al
-        List<WebElement> sizeOptions = driver.findElements(By.cssSelector(".m-variation__item"));
+        List<WebElement> sizeOptions = driver.findElements(sizeOption);
 
         for (WebElement option : sizeOptions) {
             if (option.isDisplayed() && !option.getAttribute("class").contains("-disabled")) {

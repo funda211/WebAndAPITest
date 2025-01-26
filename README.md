@@ -1,4 +1,4 @@
-# Beymen Web ve Trello API Test
+# Beymen Web Otomasyon ve Trello API Test
 
 ## Proje Açıklaması
 
